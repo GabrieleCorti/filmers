@@ -3,17 +3,73 @@ import Button from "../components/Button.astro";
 import Input from "../components/Input.astro";
 import Main from "../components/Main.astro";
 import Layout from "../layouts/Layout.astro";
+import { db, Film as FilmData } from "astro:db";
+
+export const prerender = false;
+
+const errors = { title: "", releaseYear: "", link: "" };
+if (Astro.request.method === "POST") {
+  try {
+    const formData = await Astro.request.formData();
+    const title = formData.get("title")?.toString().trim() ?? "";
+    const link = formData.get("link")?.toString().trim() ?? "";
+    const releaseYearData = formData.get("releaseYear");
+    const releaseYear = releaseYearData
+      ? Number(releaseYearData.toString())
+      : null;
+
+    if (typeof title !== "string" || title.length < 1 || !title) {
+      errors.title += "Inserisci un titolo valido.";
+    }
+    if (link && typeof link !== "string") {
+      errors.link += "Inserisci un link valido.";
+    }
+
+    const hasErrors = Object.values(errors).some((msg) => msg);
+    if (!hasErrors) {
+      await db.insert(FilmData).values({
+        title: title?.toString().trim() ?? "",
+        link: link?.toString().trim() ?? "",
+        releaseYear,
+      });
+      return Astro.redirect("/");
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+}
 ---
 
 <Layout subtitle="New">
   <Main>
     <h1 class="font-neutral-bold">Nuovo Film</h1>
-    <form id="new-film-form">
+    <form class="new-film-form" method="POST">
       <div class="header-inputs">
-        <Input label="Nome film" class="name-input" name="Nome" id="name" placeholder="Nome del film" />
-        <Input label="Data uscita" class="date-input" name="Data" id="date" type="date" />
+        <Input
+          label="Nome film"
+          class="name-input"
+          name="title"
+          id="name"
+          placeholder="Nome del film"
+        />
+        <Input
+          label="Data uscita"
+          class="date-input"
+          name="releaseYear"
+          id="date"
+          type="date"
+          placeholder="Anno uscita"
+        />
       </div>
-      <Input label="Link" class="link-input" name="Link" id="link" placeholder="Link" />
+      <Input
+        label="Link"
+        class="link-input"
+        name="link"
+        id="link"
+        placeholder="Link"
+      />
       <Button type="submit" class="submit">Aggiungi Film</Button>
     </form>
   </Main>
@@ -31,7 +87,7 @@ import Layout from "../layouts/Layout.astro";
     width: 50%;
     margin-bottom: 1rem;
   }
- .name-input {
+  .name-input {
     flex: 2;
   }
   .date-input {
