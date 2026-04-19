@@ -1,8 +1,8 @@
 ---
-import Button from "../components/Button.astro";
-import Input from "../components/Input.astro";
-import Main from "../components/Main.astro";
-import Layout from "../layouts/Layout.astro";
+import Button from "../../components/Button.astro";
+import Input from "../../components/Input.astro";
+import Main from "../../components/Main.astro";
+import Layout from "../../layouts/Layout.astro";
 import { db, Film as FilmData } from "astro:db";
 
 export const prerender = false;
@@ -44,7 +44,7 @@ if (Astro.request.method === "POST") {
 
 <Layout subtitle="New">
   <Main>
-    <h1 class="font-neutral-bold">Nuovo Film</h1>
+    <h2 class="font-neutral-bold">Nuovo Film</h1>
     <form class="new-film-form" method="POST">
       <div class="header-inputs">
         <Input
@@ -75,17 +75,19 @@ if (Astro.request.method === "POST") {
   </Main>
 </Layout>
 <style>
-  h1 {
+  h2 {
     margin-bottom: 2rem;
   }
   .new-film-form {
+    display: flex;
     width: 100%;
+    flex-direction: column;
+    gap: 1rem;
   }
   .header-inputs {
     display: flex;
     gap: 1rem;
     width: 50%;
-    margin-bottom: 1rem;
   }
   .name-input {
     flex: 2;
@@ -97,6 +99,6 @@ if (Astro.request.method === "POST") {
     width: 100%;
   }
   .submit {
-    margin-top: 1rem;
+    margin-left: auto;
   }
 </style>

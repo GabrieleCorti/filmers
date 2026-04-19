@@ -1,0 +1,23 @@
+---
+import { type Props as RatingProps } from "../../components/Rating.astro";
+import { db, Film as FilmData, Vote, User, desc} from 'astro:db';
+import Layout from "../../layouts/Layout.astro";
+import CategoryList from "../../components/CategoryList.astro";
+
+const films = await db.select().from(FilmData).orderBy(desc(FilmData.createdAt));
+const votes = await db.select().from(Vote);
+const users = await db.select().from(User).orderBy(User.username);
+const filmsWithVotes = films.map(film => {
+  return {
+    title: film.title,
+    ratings: users.map(user => {
+      const vote = votes.find(v => v.filmId === film.id && v.userId === user.id);
+      return vote ? (vote.rating === 0 ? undefined : vote.rating) as RatingProps["rating"] : undefined;
+    })
+  }
+})
+---
+
+<Layout subtitle="Film">
+	<CategoryList title="Film"  ratings={filmsWithVotes}/>
+</Layout>

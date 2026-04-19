@@ -1,6 +1,8 @@
 ---
 import Main from "./Main.astro";
-import RatingResume, { type Props as RatingResumeProps } from "./RatingResume.astro";
+import RatingResume, {
+  type Props as RatingResumeProps,
+} from "./RatingResume.astro";
 export interface Props {
   ratings: RatingResumeProps[];
   title: string;
@@ -8,14 +10,36 @@ export interface Props {
 ---
 
 <Main>
-  <h2 class="font-neutral-bold">{Astro.props.title}</h2>
+  <div class="title-wrapper">
+    <h2 class="font-neutral-bold">{Astro.props.title}</h2>
+    <a class="icon-button" href="/films/new">&plus;</a>
+  </div>
+
   <ul>
     {
-      Astro.props.ratings.map(rateProps => <li><RatingResume {...rateProps}/></li>)
+      Astro.props.ratings.map((rateProps) => (
+        <li>
+          <RatingResume {...rateProps} />
+        </li>
+      ))
     }
   </ul>
 </Main>
 <style>
+  .title-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .icon-button {
+    font-size: 2rem;
+    text-decoration: none;
+    display: block;
+  }
+  .icon-button:hover {
+    text-decoration: none;
+  }
   li {
     list-style: none;
     padding-bottom: 1rem;

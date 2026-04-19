@@ -1,0 +1,35 @@
+---
+const isFilmsPage = Astro.originPathname.includes('/films');
+const isCigarPage = Astro.originPathname.includes('/cigar');
+---
+<header>
+  <h1 class="font-neutral-bold">Prefer.io</h1>
+  <nav>
+    <ul class="nav">
+      <li><a href="/films" class={isFilmsPage ? "active" : ""}>Film</a></li>
+      <li><span class="divider">|</span></li>
+      <li><a href="/cigar" class={isCigarPage ? "active" : ""}>Sigari</a></li> 
+    </ul>
+  </nav>
+</header>
+<style>
+  header {
+    margin-bottom: 2rem;
+    max-width: 1280px;
+    width: 100%;
+    padding: 1rem 2rem 0 2rem;
+  }
+  h1 {
+    margin-bottom: 1rem;
+  }
+  .nav {
+    display: flex;
+    gap: 0.5rem;
+  }
+  nav {
+    width: 100%;
+  }
+  .divider {
+    color: #bbbbbb;
+  }
+</style>
