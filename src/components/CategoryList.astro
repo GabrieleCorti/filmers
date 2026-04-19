@@ -1,0 +1,29 @@
+---
+import Main from "./Main.astro";
+import RatingResume, { type Props as RatingResumeProps } from "./RatingResume.astro";
+export interface Props {
+  ratings: RatingResumeProps[];
+  title: string;
+}
+---
+
+<Main>
+  <h2 class="font-neutral-bold">{Astro.props.title}</h2>
+  <ul>
+    {
+      Astro.props.ratings.map(rateProps => <li><RatingResume {...rateProps}/></li>)
+    }
+  </ul>
+</Main>
+<style>
+  li {
+    list-style: none;
+    padding-bottom: 1rem;
+  }
+  li:not(:first-child) {
+    margin-top: 1rem;
+  }
+  li:not(:last-child) {
+    border-bottom: 1px solid #ebebeb;
+  }
+</style>
