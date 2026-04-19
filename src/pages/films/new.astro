@@ -42,12 +42,13 @@ if (Astro.request.method === "POST") {
 }
 ---
 
-<Layout subtitle="New">
+<Layout subtitle="Aggiungi film">
   <Main>
     <h2 class="font-neutral-bold">Nuovo Film</h1>
     <form class="new-film-form" method="POST">
       <div class="header-inputs">
         <Input
+          required
           label="Nome film"
           class="name-input"
           name="title"
