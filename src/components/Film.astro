@@ -1,0 +1,36 @@
+---
+import { Image } from "astro:assets";
+import Vote from "./Vote.astro";
+
+export interface Props {
+  title: string;
+}
+
+const props = Astro.props;
+---
+
+<div class="film">
+  <h2 class="film-title">{props.title}</h2>
+  <div class="votes">
+    <div>
+      <!-- <Image src="../assets/film1.jpg" alt="Film 1" height="200" width="200" /> -->
+      <Vote vote={7} readonly />
+    </div>
+  </div>
+</div>
+
+<style>
+  .film {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .film-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  .votes {
+    display: flex;
+    gap: 0.857rem;
+  }
+</style>

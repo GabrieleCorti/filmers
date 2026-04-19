@@ -1,0 +1,46 @@
+---
+import Button from "../components/Button.astro";
+import Input from "../components/Input.astro";
+import Main from "../components/Main.astro";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout subtitle="New">
+  <Main>
+    <h1 class="font-neutral-bold">Nuovo Film</h1>
+    <form id="new-film-form">
+      <div class="header-inputs">
+        <Input label="Nome film" class="name-input" name="Nome" id="name" placeholder="Nome del film" />
+        <Input label="Data uscita" class="date-input" name="Data" id="date" type="date" />
+      </div>
+      <Input label="Link" class="link-input" name="Link" id="link" placeholder="Link" />
+      <Button type="submit" class="submit">Aggiungi Film</Button>
+    </form>
+  </Main>
+</Layout>
+<style>
+  h1 {
+    margin-bottom: 2rem;
+  }
+  .new-film-form {
+    width: 100%;
+  }
+  .header-inputs {
+    display: flex;
+    gap: 1rem;
+    width: 50%;
+    margin-bottom: 1rem;
+  }
+ .name-input {
+    flex: 2;
+  }
+  .date-input {
+    flex: 1;
+  }
+  .link-input {
+    width: 100%;
+  }
+  .submit {
+    margin-top: 1rem;
+  }
+</style>

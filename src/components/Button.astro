@@ -1,0 +1,24 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export interface ButtonProps extends HTMLAttributes<"button"> {}
+
+---
+<button {...Astro.props}><slot /></button>
+<style>
+button {
+    padding: 0.5rem 1rem;
+    background: #fe4500;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+  button:disabled {
+    background: #ebebeb;
+    cursor: not-allowed;
+  }
+  button:hover {
+    background: #e03e00;
+  }
+</style>
+  

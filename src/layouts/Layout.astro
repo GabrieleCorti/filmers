@@ -1,23 +1,91 @@
+---
+export interface Props {
+  subtitle: string;
+}
+
+const props = Astro.props;
+---
+
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Filmers - {props.subtitle}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
 </html>
+<style is:global>
+  @font-face {
+    font-family: "NeutralFace";
+    src: url("/src/assets/fonts/NeutralFace.otf") format("opentype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+  @font-face {
+    font-family: "NeutralFace";
+    src: url("/src/assets/fonts/NeutralFace-Bold.otf") format("opentype");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "Vercetti";
+    src:
+      url("/src/assets/fonts/Vercetti-Regular.woff2") format("woff2"),
+      url("/src/assets/fonts/Vercetti-Regular.woff") format("woff");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  button {
+    border: none;
+    background: transparent;
+  }
+  body {
+    display: flex;
+    justify-content: center;
+  }
+
+  .font-neutral {
+    font-family: "NeutralFace", sans-serif;
+    font-weight: 400;
+  }
+  .font-neutral-bold {
+    font-family: "NeutralFace", sans-serif;
+    font-weight: 700;
+  }
+  .font-vercetti {
+    font-family: "Vercetti", sans-serif;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  span,
+  label,
+  input {
+    font-family: "Vercetti", sans-serif;
+  }
+  input {
+    border: none;
+    background: transparent;
+    outline: none;
+  }
 </style>

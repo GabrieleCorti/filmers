@@ -1,0 +1,54 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export interface Props extends HTMLAttributes<"input"> {
+  label: string;
+}
+
+const { class: className, ...props } = Astro.props;
+---
+
+<div class:list={["input-wrapper", className]}>
+  <label for={props.id}>{props.label}</label>
+  <input {...props} />
+</div>
+<style>
+  .input-wrapper {
+    border-bottom: 1px solid #ebebeb;
+    padding-bottom: 0.25rem;
+    position: relative;
+  }
+  .input-wrapper::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: #fe4500;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.2s ease-in-out;
+  }
+  .input-wrapper:has(:focus-within)::before {
+    transform: scaleX(1);
+    transform-origin: left;
+    transition: transform 0.2s ease-in-out;
+  }
+  .input-wrapper:has(:focus-within) label {
+    color: #fe4500;
+    transition: color 0.2s ease;
+  }
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: x-small;
+    text-transform: uppercase;
+    transition: color 0.2s ease-in-out;
+  }
+  input {
+    width: 100%;
+    padding: 0;
+  }
+</style>
