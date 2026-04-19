@@ -1,0 +1,30 @@
+---
+export interface Props {
+  label: string;
+  info: string;
+  isLink?: boolean;
+}
+---
+
+<div class="info-wrapper">
+  <h4 class="info-label">{Astro.props.label}</h4>
+  {
+    Astro.props.isLink ? (
+      <a href={Astro.props.info} target="_blank">
+        {Astro.props.info}
+      </a>
+    ) : (
+      <p>{Astro.props.info}</p>
+    )
+  }
+</div>
+<style>
+  .info-wrapper {
+    width: 100%;
+  }
+  .info-label {
+    font-size: 0.875rem;
+    font-weight: 400;
+    margin-bottom: 0.875rem;
+  }
+</style>
