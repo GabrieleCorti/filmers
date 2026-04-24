@@ -1,0 +1,56 @@
+---
+export interface Props {
+  author: string;
+  content: string;
+  date: Date;
+}
+
+const { author, content, date } = Astro.props;
+---
+
+<article>
+  <div class="placeholder"></div>
+  <div class="comment-body">
+    <h4 class="comment-author font-neutral-bold">
+      {author}
+      <span class="comment-date">
+           • {new Intl.DateTimeFormat("it-IT", { dateStyle: "short" }).format(date)}
+      </span>
+    </h4>
+    <p class="comment-content">{content}</p>
+  </div>
+</article>
+<style>
+  article {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .placeholder {
+    width: 50px;
+    height: 50px;
+    background-color: #e4dfda;
+    border-radius: 999px;
+  }
+  .comment-body {
+    flex: 1;
+    border-left: 1px solid #e4dfda;
+    max-width: 450px;
+    padding: 0.5rem 0.75rem;
+  }
+  .comment-author {
+    font-weight: bold;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    color: #39393a;
+  }
+  .comment-content {
+    font-size: 1rem;
+    overflow-wrap: break-word;
+  }
+  .comment-date {
+    font-size: 0.5rem;
+    color: #39393a;
+  }
+</style>

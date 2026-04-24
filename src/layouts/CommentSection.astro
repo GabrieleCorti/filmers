@@ -1,0 +1,59 @@
+---
+import Layout, { type Props as LayoutProps } from "../layouts/Layout.astro";
+import Comment, {
+  type Props as CommentProps,
+} from "../components/Comment.astro";
+import Input from "../components/Input.astro";
+import Button from "../components/Button.astro";
+import Main from "../components/Main.astro";
+export interface Props extends LayoutProps {
+  comments: CommentProps[];
+}
+const { comments, ...layoutProps } = Astro.props;
+---
+
+<Layout {...layoutProps}>
+  <Main class="flex-main">
+    <slot />
+    <section class="comment-section">
+      <ul class="comment-list">
+        {
+          comments.map(({ author, content, date }) => (
+            <li>
+              <Comment author={author} content={content} date={date} />
+            </li>
+          ))
+        }
+      </ul>
+      <form class="comment-form" method="POST">
+        <Input style={{flex: 1}} id="comment-input" class="comment-input" placeholder={"Aggiungi un commento"} label="" />
+        <Button type="submit">Invia</Button>
+      </form>
+    </section>
+  </Main>
+</Layout>
+<style>
+  .flex-main {
+    display: flex;
+    flex-direction: column;
+  }
+  .comment-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-top: 2rem;
+    width: 100%;
+  }
+  .comment-list {
+    flex: 1;
+  }
+  .comment-form {
+    width: 100%;
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  :global(.comment-input) {
+    flex: 1;
+  }
+</style>

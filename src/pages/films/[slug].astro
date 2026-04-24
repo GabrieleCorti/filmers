@@ -3,15 +3,14 @@ export const prerender = false;
 
 import { db, eq } from "astro:db";
 import Info from "../../components/Info.astro";
-import Main from "../../components/Main.astro";
-import Layout from "../../layouts/Layout.astro";
 import { Film, Vote, User } from "astro:db";
 import Rating from "../../components/Rating.astro";
 import { type Props as RatingProps } from "../../components/Rating.astro";
 import InfoRating from "../../components/InfoRating.astro";
+import CommentSection from "../../layouts/CommentSection.astro";
 const { slug } = Astro.params;
 
-const [{ id, title, releaseYear, link, insertBy, slug: filmSlug }] = await db
+const [{ id, title, releaseYear, link, insertBy }] = await db
   .select()
   .from(Film)
   .where(eq(Film.slug, slug ?? ""))
@@ -55,26 +54,31 @@ if (Astro.request.method === "POST") {
 }
 ---
 
-<Layout subtitle="Film">
-  <Main>
-    <h2 class="item-name">
-      {title}
-      <Rating readonly rating={averageRating as RatingProps["rating"]} />
-    </h2>
-    <form class="vote-form" method="POST">
-      <InfoRating label="Il tuo voto:" buttonType="submit" />
-    </form>
-    <div class="info-wrapper">
-      <Info
-        label="Anno di uscita:"
-        info={String(releaseYear || "Anno non disponibile")}
-      />
-      <Info label="Aggiunto da:" info={username} />
-      <Info label="Link:" info={link} isLink />
-    </div>
-    <!--- <CommentSection id={slug} /> -->
-  </Main>
-</Layout>
+<CommentSection
+  subtitle="Film"
+  comments={Array.from({ length: 10 }).map(() => ({
+    author: "Mario Rossi",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris.",
+    date: new Date(),
+  }))}
+>
+  <h2 class="item-name">
+    {title}
+    <Rating readonly rating={averageRating as RatingProps["rating"]} />
+  </h2>
+  <form class="vote-form" method="POST">
+    <InfoRating label="Il tuo voto:" buttonType="submit" />
+  </form>
+  <div class="info-wrapper">
+    <Info
+      label="Anno di uscita:"
+      info={String(releaseYear || "Anno non disponibile")}
+    />
+    <Info label="Aggiunto da:" info={username} />
+    <Info label="Link:" info={link} isLink />
+  </div>
+</CommentSection>
 <style>
   .vote-form {
     display: block;
