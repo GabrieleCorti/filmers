@@ -1,11 +1,15 @@
 ---
+import type { HTMLAttributes } from "astro/types";
+
 export interface Props {
   rating?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
   readonly?: boolean;
+  buttonType?: HTMLAttributes<"button">["type"];
 }
 
 const props = Astro.props;
 const rating = props.rating ?? 0;
+const type= props.readonly ? "button" : props.buttonType ?? "button";
 const elements = [
   [1, 2],
   [3, 4],
@@ -15,9 +19,8 @@ const elements = [
 ];
 ---
 
-<div
-  class:list={["wrapper", { readonly: props.readonly }]}
->
+<div class:list={["wrapper", { readonly: props.readonly }]} data-button-type={type}>
+  <input hidden name="rating" type="range" value={rating} />
   {
     elements.map((partial) => (
       <div class="rating">
@@ -25,11 +28,13 @@ const elements = [
           class:list={[{ active: partial[0] <= rating }]}
           disabled={props.readonly}
           data-rating={partial[0]}
+          type={type}
         />
         <button
           data-rating={partial[1]}
           disabled={props.readonly}
           class:list={[{ active: partial[1] <= rating }]}
+          type={type}
         />
       </div>
     ))
@@ -50,7 +55,7 @@ const elements = [
     overflow: hidden;
     width: 0.875rem;
     height: 0.875rem;
-    background-color: #E4DFDA;
+    background-color: #e4dfda;
   }
   button {
     padding: 0;
@@ -69,12 +74,12 @@ const elements = [
     wrapper.addEventListener("mouseover", (e) => {
       if (wrapper.classList.contains("readonly")) return;
 
-      //it's important to use closest here, 
+      //it's important to use closest here,
       //because the user might hover either the button or the div.rating
       const btn = (e.target as Element)?.closest("button");
       if (!btn) return;
 
-      const rating = Number(btn.dataset.rating);
+      const rating = Number(btn.getAttribute('data-rating'));
 
       wrapper.querySelectorAll("button").forEach((b) => {
         b.classList.toggle("active", Number(b.dataset.rating) <= rating);
@@ -87,6 +92,33 @@ const elements = [
       wrapper.querySelectorAll("button").forEach((b) => {
         b.classList.remove("active");
       });
+    });
+
+    wrapper.addEventListener("click", (e) => {
+      if (wrapper.classList.contains("readonly")) return;
+
+      const btn = (e.target as Element)?.closest("button");
+      if (!btn) return;
+
+      if (wrapper.getAttribute('data-button-type') === "submit") {
+        e.preventDefault();
+      }
+
+      const newRating = Number(btn.getAttribute('data-rating'));
+
+      const input = wrapper.querySelector('input[name="rating"]') as HTMLInputElement;
+      input.value = newRating.toString();
+
+      wrapper.querySelectorAll("button").forEach((b) => {
+        b.classList.toggle("active", Number(b.getAttribute('data-rating')) <= newRating);
+      });
+
+      if (wrapper.getAttribute('data-button-type') === "submit") {
+        const form = wrapper.closest('form');
+        if (form) {
+          form.submit();
+        }
+      }
     });
   });
 </script>

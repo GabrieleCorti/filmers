@@ -5,41 +5,81 @@ import { db, eq } from "astro:db";
 import Info from "../../components/Info.astro";
 import Main from "../../components/Main.astro";
 import Layout from "../../layouts/Layout.astro";
-import { Film, Vote, User} from "astro:db";
+import { Film, Vote, User } from "astro:db";
 import Rating from "../../components/Rating.astro";
-import {type Props as RatingProps} from "../../components/Rating.astro";
+import { type Props as RatingProps } from "../../components/Rating.astro";
+import InfoRating from "../../components/InfoRating.astro";
 const { slug } = Astro.params;
-const [{ id, title, releaseYear, link, insertBy }] = await db
+
+const [{ id, title, releaseYear, link, insertBy, slug: filmSlug }] = await db
   .select()
   .from(Film)
   .where(eq(Film.slug, slug ?? ""))
   .limit(1);
+
 const [{ username }] = await db
   .select()
   .from(User)
   .where(eq(User.id, insertBy))
   .limit(1);
-const ratings = await db
-  .select()
-  .from(Vote)
-  .where(eq(Vote.filmId, id));
-const validRatings = ratings.filter(r => r.rating !== 0);
-const averageRating = validRatings.length ? validRatings.reduce((acc, { rating }) => acc + rating, 0) / validRatings.length : 0;
+
+const ratings = await db.select().from(Vote).where(eq(Vote.filmId, id));
+
+const validRatings = ratings.filter((r) => r.rating !== 0);
+const averageRating = validRatings.length
+  ? validRatings.reduce((acc, { rating }) => acc + rating, 0) /
+    validRatings.length
+  : 0;
+
+if (Astro.request.method === "POST") {
+  try {
+    const formData = await Astro.request.formData();
+    const ratingData = formData.get("rating");
+    const rating = ratingData ? Number(ratingData.toString()) : 0;
+    await db
+      .insert(Vote)
+      .values({
+        filmId: id,
+        userId: 1, // TODO: replace with actual user ID from auth context
+        rating,
+      })
+      .onConflictDoUpdate({
+        target: [Vote.filmId, Vote.userId],
+        set: { rating },
+      });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+}
 ---
 
 <Layout subtitle="Film">
   <Main>
-    <h2 class="item-name">{title} <Rating readonly rating={averageRating as RatingProps['rating']} /></h2>
+    <h2 class="item-name">
+      {title}
+      <Rating readonly rating={averageRating as RatingProps["rating"]} />
+    </h2>
+    <form class="vote-form" method="POST">
+      <InfoRating label="Il tuo voto:" buttonType="submit" />
+    </form>
     <div class="info-wrapper">
-      <Info label="Voto:" info="'bbbbbbbb" />
-      <Info label="Anno di uscita:" info={String(releaseYear || "Anno non disponibile")} />
-      <Info label="Aggiunto da:" info={username} /> 
+      <Info
+        label="Anno di uscita:"
+        info={String(releaseYear || "Anno non disponibile")}
+      />
+      <Info label="Aggiunto da:" info={username} />
       <Info label="Link:" info={link} isLink />
     </div>
     <!--- <CommentSection id={slug} /> -->
   </Main>
 </Layout>
 <style>
+  .vote-form {
+    display: block;
+    margin-bottom: 1rem;
+  }
   .item-name {
     padding-bottom: 1rem;
     display: flex;

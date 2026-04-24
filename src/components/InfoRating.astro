@@ -1,0 +1,22 @@
+---
+import Rating, { type Props as RatingProps } from "./Rating.astro";
+export interface Props extends RatingProps {
+  label: string;
+}
+const { label, ...ratingProps } = Astro.props;
+---
+
+<div class="info-wrapper">
+  <h4 class="info-label">{label}</h4>
+  <Rating {...ratingProps} />
+</div>
+<style>
+  .info-wrapper {
+    width: 100%;
+  }
+  .info-label {
+    font-size: 0.875rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+  }
+</style>
