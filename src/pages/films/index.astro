@@ -10,6 +10,7 @@ const users = await db.select().from(User).orderBy(User.username);
 const filmsWithVotes = films.map(film => {
   return {
     title: film.title,
+    href: `/films/${film.slug}`,
     ratings: users.map(user => {
       const vote = votes.find(v => v.filmId === film.id && v.userId === user.id);
       return vote ? (vote.rating === 0 ? undefined : vote.rating) as RatingProps["rating"] : undefined;

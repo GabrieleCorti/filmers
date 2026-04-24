@@ -1,25 +1,54 @@
 ---
 export const prerender = false;
 
+import { db, eq } from "astro:db";
 import Info from "../../components/Info.astro";
 import Main from "../../components/Main.astro";
 import Layout from "../../layouts/Layout.astro";
+import { Film, Vote, User} from "astro:db";
+import Rating from "../../components/Rating.astro";
+import {type Props as RatingProps} from "../../components/Rating.astro";
 const { slug } = Astro.params;
+const [{ id, title, releaseYear, link, insertBy }] = await db
+  .select()
+  .from(Film)
+  .where(eq(Film.slug, slug ?? ""))
+  .limit(1);
+const [{ username }] = await db
+  .select()
+  .from(User)
+  .where(eq(User.id, insertBy))
+  .limit(1);
+const ratings = await db
+  .select()
+  .from(Vote)
+  .where(eq(Vote.filmId, id));
+const validRatings = ratings.filter(r => r.rating !== 0);
+const averageRating = validRatings.length ? validRatings.reduce((acc, { rating }) => acc + rating, 0) / validRatings.length : 0;
 ---
 
 <Layout subtitle="Film">
   <Main>
-    <h2 class="item-name">{slug}</h2>
+    <h2 class="item-name">{title} <Rating readonly rating={averageRating as RatingProps['rating']} /></h2>
     <div class="info-wrapper">
-      <Info label="aaaaa" info="'bbbbbbbb" />
-      <Info label="aaaaa" info="'bbbbbbbb" />
-      <Info label="aaaaa" info="'bbbbbbbb" />
+      <Info label="Voto:" info="'bbbbbbbb" />
+      <Info label="Anno di uscita:" info={String(releaseYear || "Anno non disponibile")} />
+      <Info label="Aggiunto da:" info={username} /> 
+      <Info label="Link:" info={link} isLink />
     </div>
-    <div class="comment-wrapper"></div>
+    <!--- <CommentSection id={slug} /> -->
   </Main>
 </Layout>
 <style>
- .item-name {
-  padding-bottom: 1rem;
- }
+  .item-name {
+    padding-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .info-wrapper {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, minmax(100px, 200px));
+  }
 </style>

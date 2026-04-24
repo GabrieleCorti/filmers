@@ -28,14 +28,15 @@ if (Astro.request.method === "POST") {
 
     const hasErrors = Object.values(errors).some((msg) => msg);
     if (!hasErrors) {
+      const slug = slugify(title?.toString().trim() ?? "");
       await db.insert(FilmData).values({
         title: title?.toString().trim() ?? "",
         link: link?.toString().trim() ?? "",
         releaseYear,
-        slug: slugify(title?.toString().trim() ?? ""),
+        slug,
         insertBy: 1, // TODO: replace with actual user ID from auth context
       });
-      return Astro.redirect("/");
+      return Astro.redirect("/films/" + slug);
     }
   } catch (error) {
     if (error instanceof Error) {

@@ -5,6 +5,7 @@ import {type Props as RatingProps} from "./Rating.astro";
 
 export interface Props {
   title: string;
+  href: string;
   ratings: RatingProps["rating"][];
 }
 
@@ -12,7 +13,7 @@ const props = Astro.props;
 ---
 
 <div class="film">
-  <h2 class="film-title">{props.title}</h2>
+  <h2 class="film-title"><a href={props.href}>{props.title}</a></h2>
   <div class="votes">
     {props.ratings.map((rating) => (
       <div>
