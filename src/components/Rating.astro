@@ -9,7 +9,7 @@ export interface Props {
 
 const props = Astro.props;
 const rating = props.rating ?? 0;
-const type= props.readonly ? "button" : props.buttonType ?? "button";
+const type = props.readonly ? "button" : (props.buttonType ?? "button");
 const elements = [
   [1, 2],
   [3, 4],
@@ -19,7 +19,10 @@ const elements = [
 ];
 ---
 
-<div class:list={["wrapper", { readonly: props.readonly }]} data-button-type={type}>
+<div
+  class:list={["wrapper", { readonly: props.readonly }]}
+  data-button-type={type}
+>
   <input hidden name="rating" type="range" value={rating} />
   {
     elements.map((partial) => (
@@ -79,7 +82,7 @@ const elements = [
       const btn = (e.target as Element)?.closest("button");
       if (!btn) return;
 
-      const rating = Number(btn.getAttribute('data-rating'));
+      const rating = Number(btn.getAttribute("data-rating"));
 
       wrapper.querySelectorAll("button").forEach((b) => {
         b.classList.toggle("active", Number(b.dataset.rating) <= rating);
@@ -89,8 +92,13 @@ const elements = [
     wrapper.addEventListener("mouseleave", () => {
       if (wrapper.classList.contains("readonly")) return;
 
+      const input = wrapper.querySelector(
+        'input[name="rating"]',
+      ) as HTMLInputElement;
+      const currentRating = Number(input?.value) || 0;
+
       wrapper.querySelectorAll("button").forEach((b) => {
-        b.classList.remove("active");
+        b.classList.toggle("active", Number(b.dataset.rating) <= currentRating);
       });
     });
 
@@ -100,21 +108,26 @@ const elements = [
       const btn = (e.target as Element)?.closest("button");
       if (!btn) return;
 
-      if (wrapper.getAttribute('data-button-type') === "submit") {
+      if (wrapper.getAttribute("data-button-type") === "submit") {
         e.preventDefault();
       }
 
-      const newRating = Number(btn.getAttribute('data-rating'));
+      const newRating = Number(btn.getAttribute("data-rating"));
 
-      const input = wrapper.querySelector('input[name="rating"]') as HTMLInputElement;
+      const input = wrapper.querySelector(
+        'input[name="rating"]',
+      ) as HTMLInputElement;
       input.value = newRating.toString();
 
       wrapper.querySelectorAll("button").forEach((b) => {
-        b.classList.toggle("active", Number(b.getAttribute('data-rating')) <= newRating);
+        b.classList.toggle(
+          "active",
+          Number(b.getAttribute("data-rating")) <= newRating,
+        );
       });
 
-      if (wrapper.getAttribute('data-button-type') === "submit") {
-        const form = wrapper.closest('form');
+      if (wrapper.getAttribute("data-button-type") === "submit") {
+        const form = wrapper.closest("form");
         if (form) {
           form.submit();
         }

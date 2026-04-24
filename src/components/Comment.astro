@@ -2,10 +2,10 @@
 export interface Props {
   author: string;
   content: string;
-  date: Date;
+  createdAt: Date;
 }
 
-const { author, content, date } = Astro.props;
+const { author, content, createdAt } = Astro.props;
 ---
 
 <article>
@@ -14,7 +14,7 @@ const { author, content, date } = Astro.props;
     <h4 class="comment-author font-neutral-bold">
       {author}
       <span class="comment-date">
-           • {new Intl.DateTimeFormat("it-IT", { dateStyle: "short" }).format(date)}
+           • {new Intl.DateTimeFormat("it-IT", { dateStyle: "short" }).format(createdAt)}
       </span>
     </h4>
     <p class="comment-content">{content}</p>

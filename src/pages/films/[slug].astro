@@ -1,9 +1,9 @@
 ---
 export const prerender = false;
 
-import { db, eq } from "astro:db";
+import { db, eq, desc, and } from "astro:db";
 import Info from "../../components/Info.astro";
-import { Film, Vote, User } from "astro:db";
+import { Film, Vote, User, Comment } from "astro:db";
 import Rating from "../../components/Rating.astro";
 import { type Props as RatingProps } from "../../components/Rating.astro";
 import InfoRating from "../../components/InfoRating.astro";
@@ -24,7 +24,21 @@ const [{ username }] = await db
 
 const ratings = await db.select().from(Vote).where(eq(Vote.filmId, id));
 
+const rawComments = await db
+  .select()
+  .from(Comment)
+  .innerJoin(User, eq(Comment.userId, User.id))
+  .where(and(eq(Comment.entityId, id), eq(Comment.type, "film")))
+  .orderBy(desc(Comment.createdAt));
+
+const comments = rawComments.map(({ Comment, User }) => ({
+  author: User.username,
+  content: Comment.content,
+  createdAt: Comment.createdAt,
+}));
+
 const validRatings = ratings.filter((r) => r.rating !== 0);
+const userRatings = ratings.find((r) => r.userId === 1); // TODO: replace with actual user ID from auth context
 const averageRating = validRatings.length
   ? validRatings.reduce((acc, { rating }) => acc + rating, 0) /
     validRatings.length
@@ -35,17 +49,25 @@ if (Astro.request.method === "POST") {
     const formData = await Astro.request.formData();
     const ratingData = formData.get("rating");
     const rating = ratingData ? Number(ratingData.toString()) : 0;
-    await db
-      .insert(Vote)
-      .values({
+    if (!userRatings?.rating) {
+      await db.insert(Vote).values({
         filmId: id,
         userId: 1, // TODO: replace with actual user ID from auth context
         rating,
-      })
-      .onConflictDoUpdate({
-        target: [Vote.filmId, Vote.userId],
-        set: { rating },
       });
+    } else {
+      await db
+        .update(Vote)
+        .set({ rating })
+        .where(
+          and(
+            eq(Vote.filmId, id),
+            eq(Vote.userId, 1) // TODO: replace with actual user ID from auth context
+          )
+        );
+    }
+
+    return Astro.redirect("/films/" + slug);
   } catch (error) {
     if (error instanceof Error) {
       console.error(error.message);
@@ -54,21 +76,17 @@ if (Astro.request.method === "POST") {
 }
 ---
 
-<CommentSection
-  subtitle="Film"
-  comments={Array.from({ length: 10 }).map(() => ({
-    author: "Mario Rossi",
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris.",
-    date: new Date(),
-  }))}
->
+<CommentSection subtitle="Film" comments={comments}>
   <h2 class="item-name">
     {title}
     <Rating readonly rating={averageRating as RatingProps["rating"]} />
   </h2>
   <form class="vote-form" method="POST">
-    <InfoRating label="Il tuo voto:" buttonType="submit" />
+    <InfoRating
+      label="Il tuo voto:"
+      buttonType="submit"
+      rating={userRatings?.rating as RatingProps["rating"]}
+    />
   </form>
   <div class="info-wrapper">
     <Info

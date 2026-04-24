@@ -7,6 +7,8 @@ import CategoryList from "../../components/CategoryList.astro";
 const films = await db.select().from(FilmData).orderBy(desc(FilmData.createdAt));
 const votes = await db.select().from(Vote);
 const users = await db.select().from(User).orderBy(User.username);
+console.log(users);
+
 const filmsWithVotes = films.map(film => {
   return {
     title: film.title,

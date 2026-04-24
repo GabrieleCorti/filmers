@@ -18,15 +18,21 @@ const { comments, ...layoutProps } = Astro.props;
     <section class="comment-section">
       <ul class="comment-list">
         {
-          comments.map(({ author, content, date }) => (
+          comments.map((props) => (
             <li>
-              <Comment author={author} content={content} date={date} />
+              <Comment {...props} />
             </li>
           ))
         }
       </ul>
       <form class="comment-form" method="POST">
-        <Input style={{flex: 1}} id="comment-input" class="comment-input" placeholder={"Aggiungi un commento"} label="" />
+        <Input
+          style={{ flex: 1 }}
+          id="comment-input"
+          class="comment-input"
+          placeholder={"Aggiungi un commento"}
+          label=""
+        />
         <Button type="submit">Invia</Button>
       </form>
     </section>
