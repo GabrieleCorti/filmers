@@ -16,7 +16,7 @@ if (Astro.request.method === "POST") {
     const link = formData.get("link")?.toString().trim() ?? "";
     const releaseYearData = formData.get("releaseYear");
     const releaseYear = releaseYearData
-      ? Number(releaseYearData.toString())
+      ? Number(new Date(releaseYearData.toString()).getFullYear())
       : null;
 
     if (typeof title !== "string" || title.length < 1 || !title) {
