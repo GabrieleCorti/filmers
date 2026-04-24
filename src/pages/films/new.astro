@@ -4,6 +4,7 @@ import Input from "../../components/Input.astro";
 import Main from "../../components/Main.astro";
 import Layout from "../../layouts/Layout.astro";
 import { db, Film as FilmData } from "astro:db";
+import { slugify } from "../../utils";
 
 export const prerender = false;
 
@@ -31,6 +32,8 @@ if (Astro.request.method === "POST") {
         title: title?.toString().trim() ?? "",
         link: link?.toString().trim() ?? "",
         releaseYear,
+        slug: slugify(title?.toString().trim() ?? ""),
+        insertBy: 1, // TODO: replace with actual user ID from auth context
       });
       return Astro.redirect("/");
     }

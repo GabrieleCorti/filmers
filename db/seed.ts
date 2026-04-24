@@ -1,4 +1,4 @@
-import { db, Film, User, Vote } from 'astro:db';
+import { db, Film, User, Vote, Comment } from 'astro:db';
 
 export default async function() {
   // Insert test users
@@ -13,26 +13,34 @@ export default async function() {
     {
       id: 1,
       title: "The Shawshank Redemption",
-      link: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
-      releaseYear: 1994
+      link: "https://it.wikipedia.org/wiki/Pagina_principale",
+      releaseYear: 1994,
+      slug: "the-shawshank-redemption",
+      insertBy: 1,
     },
     {
       id: 2,
       title: "The Godfather",
-      link: "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
-      releaseYear: 1972
+      link: "https://it.wikipedia.org/wiki/Pagina_principale",
+      releaseYear: 1972,
+      slug: "the-godfather",
+      insertBy: 2,
     },
     {
       id: 3,
       title: "Pulp Fiction",
-      link: "The lives of two mob hitmen, a boxer, a gangster and his wife intertwine in four tales of violence and redemption.",
-      releaseYear: 1994
+      link: "https://it.wikipedia.org/wiki/Pagina_principale",
+      releaseYear: 1994,
+      slug: "pulp-fiction",
+      insertBy: 3,
     },
     {
       id: 4,
       title: "Inception",
-      link: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
-      releaseYear: 2010
+      link: "https://it.wikipedia.org/wiki/Pagina_principale",
+      releaseYear: 2010,
+      slug: "inception",
+      insertBy: 1,
     },
   ]);
 
@@ -48,4 +56,12 @@ export default async function() {
     { id: 8, filmId: 4, userId: 2, rating: 4 },
     { id: 9, filmId: 4, userId: 3, rating: 5 },
   ]);
+
+  await db.insert(Comment).values([
+    { id: 1, type: 'film', entityId: 1, userId: 1, content: "Amazing movie!" },
+    { id: 2, type: 'film', entityId: 1, userId: 2, content: "A timeless classic." },
+    { id: 3, type: 'film', entityId: 2, userId: 1, content: "Masterpiece." },
+    { id: 4, type: 'film', entityId: 2, userId: 3, content: "One of the best films ever made." },
+    { id: 5, type: 'film', entityId: 3, userId: 2, content: "Great dialogue and storytelling." },
+    { id: 6, type: 'film', entityId: 3, userId: 3, content: "A bit overrated in my opinion." },]);
 }
