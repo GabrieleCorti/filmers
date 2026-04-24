@@ -26,7 +26,7 @@ const Vote = defineTable({
     id: column.number({ primaryKey: true }),
     filmId: column.number({ references: () => Film.columns.id }),
     userId: column.number({ references: () => User.columns.id }),
-    rating: column.number(),
+    rating: column.number({ default: 0 }),
     createdAt: column.date({ default: new Date() }),
   }
 });
