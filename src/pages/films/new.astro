@@ -28,10 +28,10 @@ if (Astro.request.method === "POST") {
 
     const hasErrors = Object.values(errors).some((msg) => msg);
     if (!hasErrors) {
-      const slug = slugify(title?.toString().trim() ?? "");
+      const slug = slugify(title);
       await db.insert(FilmData).values({
-        title: title?.toString().trim() ?? "",
-        link: link?.toString().trim() ?? "",
+        title,
+        link,
         releaseYear,
         slug,
         insertBy: 1, // TODO: replace with actual user ID from auth context
